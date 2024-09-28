@@ -6,8 +6,12 @@ name = "pypi"
 [packages]
 pandas = "*"
 scikit-learn = "*"
+mlops-student-performance = {file = ".", editable = true}
+matplotlib = "*"
+seaborn = "*"
 
 [dev-packages]
+ipykernel = "*"
 
 [requires]
 python_version = "3.12"
