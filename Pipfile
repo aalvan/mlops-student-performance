@@ -9,6 +9,8 @@ scikit-learn = "*"
 mlops-student-performance = {file = ".", editable = true}
 matplotlib = "*"
 seaborn = "*"
+hyperopt = "*"
+mlflow = "*"
 
 [dev-packages]
 ipykernel = "*"
