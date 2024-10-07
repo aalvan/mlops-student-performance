@@ -11,6 +11,7 @@ matplotlib = "*"
 seaborn = "*"
 hyperopt = "*"
 mlflow = "*"
+apache-airflow = "*"
 
 [dev-packages]
 ipykernel = "*"
