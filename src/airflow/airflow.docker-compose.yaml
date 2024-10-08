@@ -77,6 +77,8 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+    - ../../data:/opt/airflow/data
+    - ../../models:/opt/airflow/models
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -84,6 +86,9 @@ x-airflow-common:
       condition: service_healthy
     postgres:
       condition: service_healthy
+  networks:
+    - default
+    - shared_network
 
 services:
   postgres:
@@ -94,8 +99,7 @@ services:
       POSTGRES_DB: airflow
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
-    networks:
-      - shared_network
+    
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s
@@ -110,8 +114,6 @@ services:
     image: redis:7.2-bookworm
     expose:
       - 6379
-    networks:
-      - shared_network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -125,8 +127,6 @@ services:
     command: webserver
     ports:
       - "8080:8080"
-    networks:
-      - shared_network
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
@@ -142,8 +142,6 @@ services:
   airflow-scheduler:
     <<: *airflow-common
     command: scheduler
-    networks:
-      - shared_network
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
       interval: 30s
@@ -159,8 +157,6 @@ services:
   airflow-worker:
     <<: *airflow-common
     command: celery worker
-    networks:
-      - shared_network
     healthcheck:
       # yamllint disable rule:line-length
       test:
@@ -184,8 +180,6 @@ services:
   airflow-triggerer:
     <<: *airflow-common
     command: triggerer
-    networks:
-      - shared_network
     healthcheck:
       test: ["CMD-SHELL", 'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"']
       interval: 30s
@@ -202,8 +196,6 @@ services:
     <<: *airflow-common
     entrypoint: /bin/bash
     # yamllint disable rule:line-length
-    networks:
-      - shared_network
     command:
       - -c
       - |
@@ -276,8 +268,6 @@ services:
       - bash
       - -c
       - airflow
-    networks:
-      - shared_network
 
   # You can enable flower by adding "--profile flower" option e.g. docker-compose --profile flower up
   # or by explicitly targeted on the command line e.g. docker-compose up flower.
