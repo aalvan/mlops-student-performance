@@ -168,6 +168,7 @@ def  _train(parameters): # The "params" name in args is a part of kwargs and the
     import pandas as pd
     import mlflow
     from mlflow.models.signature import infer_signature
+    from mlflow import MlflowClient
 
     from sklearn.metrics import make_scorer
     from sklearn.model_selection import cross_validate
@@ -175,7 +176,7 @@ def  _train(parameters): # The "params" name in args is a part of kwargs and the
     from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 
-    artifact_path = 'models/random_regresor.joblib'
+    artifact_path = 'model'
     data_path = '/opt/airflow/data/processed/StudentPerformanceFactors.csv'
     random_state = 42
 
@@ -184,6 +185,7 @@ def  _train(parameters): # The "params" name in args is a part of kwargs and the
     TRACKING_SERVER_HOST = "mlflow_server"
     mlflow.set_tracking_uri(f"http://{TRACKING_SERVER_HOST}:5000")
     mlflow.set_experiment("student_performance")
+    MLFLOW_TRACKING_URI =   mlflow.get_tracking_uri()
 
     with mlflow.start_run() as run:
         mlflow.log_param("train_data_path", data_path)
@@ -231,11 +233,20 @@ def  _train(parameters): # The "params" name in args is a part of kwargs and the
 
         mlflow.sklearn.log_model(rf_regressor, artifact_path=artifact_path, signature=signature, input_example=input_example)
         artifact_uri = mlflow.get_artifact_uri()
+        run_id = run.info.run_id
         print(f'artifact_uri: {artifact_uri}')
 
         print(f"Experiment ID: {run.info.experiment_id}")
-        print(f"Run ID: {run.info.run_id}")
+        print(f"Run ID: {run_id}")
+    
+    model_uri = f"runs:/{run_id}/model"
+    model_name = "student-performance-predictor"
+    model_version = mlflow.register_model(model_uri=model_uri, name=model_name)
+    model_alias = 'best'
 
+    client = MlflowClient(MLFLOW_TRACKING_URI)
+    client.set_registered_model_alias(model_version.name, model_alias, model_version.version,)
+    
 
 with DAG(
     'student_performance',
@@ -249,7 +260,5 @@ with DAG(
     build = _build()
     hyperparameter_tuning = _hyperparameter_tuning(build)
     train = _train(hyperparameter_tuning)
-
-    end = DummyOperator(task_id='end')
 
     _prepare_data() >> build >> hyperparameter_tuning >> train
