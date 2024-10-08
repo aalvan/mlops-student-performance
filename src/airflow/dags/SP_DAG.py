@@ -1,7 +1,6 @@
 from airflow import DAG
 from airflow.decorators import task
 from airflow.operators.python import PythonOperator
-from airflow.operators.dummy import DummyOperator
 from airflow.models import Variable
 
 from datetime import datetime, timedelta
@@ -18,13 +17,13 @@ default_args = {
 
 @task.virtualenv(
         task_id='prepare_data',
-    requirements = ["scikit-learn==1.5.2"],
+    requirements = ["scikit-learn==1.5.2", "numpy==2.1.2", "pandas==2.2.3"],
     venv_cache_path="/tmp/venv_cache"
 )
 def _prepare_data():
     import numpy as np
     import pandas as pd
-    from sklearn.preprocessing import OrdinalEncoder
+    from sklearn.preprocessing import OrdinalEncoder, LabelEncoder
 
     save_path = '/opt/airflow/data/processed/StudentPerformanceFactors.csv'
     data_path = '/opt/airflow/data/raw/StudentPerformanceFactors.csv'
@@ -32,17 +31,28 @@ def _prepare_data():
     df = pd.read_csv(data_path)
     df = df.dropna()
 
-    num_cols = df.select_dtypes(include=[np.number]).columns
-    cat_cols = df.select_dtypes(include=['object', 'category']).columns
+    ordinal_columns = [
+    'Parental_Involvement', 'Access_to_Resources', 'Motivation_Level', 
+    'Family_Income', 'Teacher_Quality', 'Peer_Influence', 
+    'Parental_Education_Level', 'Distance_from_Home'
+    ]
 
-
+    binary_columns = [
+        'Extracurricular_Activities', 'Internet_Access', 
+        'School_Type', 'Learning_Disabilities', 'Gender'
+    ]
     ord_encoder = OrdinalEncoder()
-    df.loc[:, cat_cols] = ord_encoder.fit_transform(df[cat_cols])
+    df.loc[:, ordinal_columns] = ord_encoder.fit_transform(df[ordinal_columns])
+
+    label_encoder = LabelEncoder()
+    for column in binary_columns:
+        df.loc[:,column] = label_encoder.fit_transform(df[column])
+
     df.to_csv(save_path, index=False)
 
 @task.virtualenv(
     task_id = 'build',
-    requirements = ["scikit-learn==1.5.2"],
+    requirements = ["scikit-learn==1.5.2", "pandas==2.2.3"],
     venv_cache_path="/tmp/venv_cache"
 )
 def _build():
@@ -62,7 +72,7 @@ def _build():
 
 @task.virtualenv(
     task_id = 'hyperparameter_tuning',
-    requirements = ["mlflow==2.16.2", "scikit-learn==1.5.2", "hyperopt==0.2.7"],
+    requirements = ["mlflow==2.16.2", "scikit-learn==1.5.2", "hyperopt==0.2.7", "pandas==2.2.3"],
     venv_cache_path="/tmp/venv_cache"
 )
 def _hyperparameter_tuning(train_data):
@@ -161,7 +171,7 @@ def _hyperparameter_tuning(train_data):
 
 @task.virtualenv(
     task_id = 'train',
-    requirements = ["mlflow==2.16.2", "scikit-learn==1.5.2", "hyperopt==0.2.7"],
+    requirements = ["mlflow==2.16.2", "scikit-learn==1.5.2", "hyperopt==0.2.7", "pandas==2.2.3"],
     venv_cache_path="/tmp/venv_cache"
 )
 def  _train(parameters): # The "params" name in args is a part of kwargs and therefore reserved.
