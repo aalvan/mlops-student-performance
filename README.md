@@ -4,7 +4,7 @@
 # MLflow
 
 ```
-docker-compose --env-file -mlflow.env -f mlflow.docker-compose.yml up --build
+docker-compose --env-file mlflow.env -f mlflow.docker-compose.yml up --build
 
 ```
 
