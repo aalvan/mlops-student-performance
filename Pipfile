@@ -12,6 +12,7 @@ seaborn = "*"
 hyperopt = "*"
 mlflow = "*"
 apache-airflow = "*"
+fastapi = {extras = ["standard"], version = "*"}
 
 [dev-packages]
 ipykernel = "*"

@@ -86,5 +86,3 @@ networks:
     driver: bridge
   shared_network:
     external: true
-
-
