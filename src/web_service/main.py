@@ -32,9 +32,30 @@ model = mlflow.pyfunc.load_model(model_uri)
 
 def predict(features: Features):
 
-    input_data = pd.DataFrame([features.model_dump()])
+    input_data = {
+        "Hours_Studied": [features.hours_studied],
+        "Attendance": [features.attendance],
+        "Parental_Involvement": [features.parental_involvement.value],  # Use .value for enums
+        "Access_to_Resources": [features.access_to_resources.value],
+        "Extracurricular_Activities": [1 if features.extracurricular_activities else 0],
+        "Sleep_Hours": [features.sleep_hours],
+        "Previous_Scores": [features.previous_scores],
+        "Motivation_Level": [features.motivation_level.value],
+        "Internet_Access": [1 if features.internet_access else 0],
+        "Tutoring_Sessions": [features.tutoring_sessions],
+        "Family_Income": [features.family_income.value],
+        "Teacher_Quality": [features.teacher_quality.value],
+        "School_Type": [features.school_type.value],
+        "Peer_Influence": [features.peer_influence.value],
+        "Physical_Activity": [features.physical_activity],
+        "Learning_Disabilities": [1 if features.learning_disabilities else 0],
+        "Parental_Education_Level": [features.parental_education_level.value],
+        "Distance_from_Home": [features.distance_from_home.value],
+        "Gender": [features.gender.value],
+    }
 
-    ord_encoder = OrdinalEncoder()
+    #input_data = pd.DataFrame([features.model_dump()])
+    input_data = pd.DataFrame(input_data)
 
     ordinal_columns = [
         'Parental_Involvement', 'Access_to_Resources', 'Motivation_Level', 
@@ -45,6 +66,8 @@ def predict(features: Features):
         'Extracurricular_Activities', 'Internet_Access', 
         'School_Type', 'Learning_Disabilities', 'Gender'
     ]
+    
+    ord_encoder = OrdinalEncoder()
     input_data.loc[:, ordinal_columns] = ord_encoder.fit_transform(input_data[ordinal_columns])
 
     label_encoder = LabelEncoder()

@@ -1,23 +1,73 @@
-from pydantic import BaseModel, conint, condecimal
+# models/features.py
+from pydantic import BaseModel, Field
+from typing import Optional
 from enum import Enum
 
+class ParentalInvolvement(str, Enum):
+    low = 'Low'
+    medium = 'Medium'
+    high = 'High'
+
+class AccessToResources(str, Enum):
+    low = 'Low'
+    medium = 'Medium'
+    high = 'High'
+
+class MotivationLevel(str, Enum):
+    low = 'Low'
+    medium = 'Medium'
+    high = 'High'
+
+class FamilyIncome(str, Enum):
+    low = 'Low'
+    medium = 'Medium'
+    high = 'High'
+
+class TeacherQuality(str, Enum):
+    low = 'Low'
+    medium = 'Medium'
+    high = 'High'
+
+class SchoolType(str, Enum):
+    public = 'Public'
+    private = 'Private'
+
+class PeerInfluence(str, Enum):
+    positive = 'Positive'
+    neutral = 'Neutral'
+    negative = 'Negative'
+
+class ParentalEducationLevel(str, Enum):
+    high_school = 'High School'
+    college = 'College'
+    postgraduate = 'Postgraduate'
+
+class DistanceFromHome(str, Enum):
+    near = 'Near'
+    moderate = 'Moderate'
+    far = 'Far'
+
+class Gender(str, Enum):
+    male = 'Male'
+    female = 'Female'
+
 class Features(BaseModel):
-    Hours_Studied: condecimal(gt=0)  # Positive float for hours studied
-    Attendance: condecimal(ge=0, le=100)  # Percentage, between 0 and 100
-    Parental_Involvement: str  # Categorical: Low, Medium, High
-    Access_to_Resources: str  # Categorical: Low, Medium, High
-    Extracurricular_Activities: str  # Categorical: Yes, No
-    Sleep_Hours: condecimal(gt=0)  # Positive float for sleep hours
-    Previous_Scores: condecimal(gt=0)  # Positive float for previous scores
-    Motivation_Level: str  # Categorical: Low, Medium, High
-    Internet_Access: str  # Categorical: Yes, No
-    Tutoring_Sessions: conint(ge=0)  # Integer for number of tutoring sessions
-    Family_Income: str  # Categorical: Low, Medium, High
-    Teacher_Quality: str  # Categorical: Low, Medium, High
-    School_Type: str  # Categorical: Public, Private
-    Peer_Influence: str  # Categorical: Positive, Neutral, Negative
-    Physical_Activity: condecimal(gt=0)  # Positive float for hours of physical activity
-    Learning_Disabilities: str  # Categorical: Yes, No
-    Parental_Education_Level: str  # Categorical: High School, College, Postgraduate
-    Distance_from_Home: str  # Categorical: Near, Moderate, Far
-    Gender: str  # Categorical: Male, Female
+    hours_studied: float = Field(..., alias='Hours_Studied')
+    attendance: float = Field(..., alias='Attendance')
+    parental_involvement: ParentalInvolvement = Field(..., alias='Parental_Involvement')
+    access_to_resources: AccessToResources = Field(..., alias='Access_to_Resources')
+    extracurricular_activities: bool = Field(..., alias='Extracurricular_Activities')
+    sleep_hours: float = Field(..., alias='Sleep_Hours')
+    physical_activity: float = Field(..., alias='Physical_Activity')
+    previous_scores: Optional[float] = Field(None, alias='Previous_Scores')
+    motivation_level: MotivationLevel = Field(..., alias='Motivation_Level')
+    internet_access: bool = Field(..., alias='Internet_Access')
+    tutoring_sessions: int = Field(..., alias='Tutoring_Sessions')
+    family_income: FamilyIncome = Field(..., alias='Family_Income')
+    teacher_quality: TeacherQuality = Field(..., alias='Teacher_Quality')
+    school_type: SchoolType = Field(..., alias='School_Type')
+    peer_influence: PeerInfluence = Field(..., alias='Peer_Influence')
+    learning_disabilities: bool = Field(..., alias='Learning_Disabilities')
+    parental_education_level: ParentalEducationLevel = Field(..., alias='Parental_Education_Level')
+    distance_from_home: DistanceFromHome = Field(..., alias='Distance_from_Home')
+    gender: Gender = Field(..., alias='Gender')

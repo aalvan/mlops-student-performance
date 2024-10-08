@@ -5,25 +5,25 @@ api_url = "http://127.0.0.1:8000/predict"
 
 # Example input data (Features to send to the API)
 data = {
-    "Hours_Studied": 10.5,
-    "Attendance": 95,
+    "Hours_Studied": 5.0,
+    "Attendance": 90.0,
     "Parental_Involvement": "High",
     "Access_to_Resources": "Medium",
-    "Extracurricular_Activities": "Yes",
-    "Sleep_Hours": 7.5,
-    "Previous_Scores": 85.5,
-    "Motivation_Level": "Medium",
-    "Internet_Access": "Yes",
-    "Tutoring_Sessions": 2,
+    "Extracurricular_Activities": True,
+    "Sleep_Hours": 7.0,
+    "Previous_Scores": 85.0,
+    "Motivation_Level": "High",
+    "Internet_Access": True,
+    "Tutoring_Sessions": 3,
     "Family_Income": "Medium",
     "Teacher_Quality": "High",
     "School_Type": "Public",
     "Peer_Influence": "Positive",
-    "Physical_Activity": 3.5,
-    "Learning_Disabilities": "No",
+    "Physical_Activity": 2,
+    "Learning_Disabilities": False,
     "Parental_Education_Level": "College",
-    "Distance_from_Home": "Moderate",
-    "Gender": "Female"
+    "Distance_from_Home": "Near",
+    "Gender": "Male"
 }
 
 # Send a POST request to the /predict endpoint
