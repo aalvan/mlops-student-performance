@@ -1,9 +1,12 @@
-import os
+import logging
+import time
+from typing import Callable
 
+import logstash
 import pandas as pd
 
-from fastapi import FastAPI
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Response
+from starlette.background import BackgroundTask
 
 from models.features import Features
 
@@ -11,6 +14,15 @@ from sklearn.preprocessing import OrdinalEncoder, LabelEncoder
 
 import mlflow
 from mlflow import MlflowClient
+
+
+host = "logstash"
+logger = logging.getLogger("python-logstash-logger")
+logger.setLevel(logging.INFO)
+logger.addHandler(logstash.TCPLogstashHandler(host, 50000, version=1))
+
+def log_info(log_data):
+    logger.info("Log Data", extra=log_data)
 
 EXPERIMENT = 'student_performance'
 TRACKING_SERVER_HOST = "mlflow_server"
@@ -81,15 +93,41 @@ def predict(features: Features):
 
 app = FastAPI()
 
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next: Callable):
+    start_time = time.time()
+    request_body = await request.body()
+    response: Response = await call_next(request)
+    response_body = b""
+    async for chunk in response.body_iterator:  # type: ignore
+        response_body += chunk
+
+    process_time = time.time() - start_time
+    log_data = {
+        "latency": process_time,
+        "request": request_body.decode(),
+        "method": request.method,
+        "response": response_body.decode()
+    }
+    task = BackgroundTask(log_info, log_data)
+    return Response(
+        content=response_body,
+        status_code=response.status_code,
+        headers=dict(response.headers),
+        media_type=response.media_type,
+        background=task,
+    )
+
 @app.post("/predict")
 def predict_endpoint(features: Features):
-    #print(f"Received features: {features}")
     try:
         pred = predict(features)
         result = {
             'score': pred,
             'model_version': RUN_ID
         }
+        logger.info(f"Prediction made: {result['score']} using model version {RUN_ID}")
         return result
     except Exception as e:
+        logger.error(f"Error during prediction: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
