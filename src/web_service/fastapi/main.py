@@ -43,7 +43,6 @@ RUN_ID = model_version_info.run_id
 model = mlflow.pyfunc.load_model(model_uri)
 
 def predict(features: Features):
-
     input_data = {
         "Hours_Studied": [features.hours_studied],
         "Attendance": [features.attendance],

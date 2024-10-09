@@ -9,6 +9,8 @@ scikit-learn = "*"
 mlflow = "*"
 fastapi = {extras = ["standard"], version = "*"}
 python-logstash = "*"
+asyncio = "*"
+pytest-asyncio = "*"
 
 [dev-packages]
 ipykernel = "*"

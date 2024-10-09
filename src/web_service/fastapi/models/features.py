@@ -1,6 +1,5 @@
 # models/features.py
 from pydantic import BaseModel, Field
-from typing import Optional
 from enum import Enum
 
 class ParentalInvolvement(str, Enum):
@@ -52,14 +51,14 @@ class Gender(str, Enum):
     female = 'Female'
 
 class Features(BaseModel):
-    hours_studied: float = Field(..., alias='Hours_Studied')
-    attendance: float = Field(..., alias='Attendance')
+    hours_studied: float = Field(..., alias='Hours_Studied', ge=0, le=1e38)
+    attendance: float = Field(..., alias='Attendance', ge=0, le=1e38)
     parental_involvement: ParentalInvolvement = Field(..., alias='Parental_Involvement')
     access_to_resources: AccessToResources = Field(..., alias='Access_to_Resources')
     extracurricular_activities: bool = Field(..., alias='Extracurricular_Activities')
-    sleep_hours: float = Field(..., alias='Sleep_Hours')
-    physical_activity: float = Field(..., alias='Physical_Activity')
-    previous_scores: Optional[float] = Field(None, alias='Previous_Scores')
+    sleep_hours: float = Field(..., alias='Sleep_Hours', ge=0, le=1e38)
+    physical_activity: float = Field(..., alias='Physical_Activity', ge=0, le=1e38)
+    previous_scores: float | None = Field(None, alias='Previous_Scores', ge=0, le=1e38)
     motivation_level: MotivationLevel = Field(..., alias='Motivation_Level')
     internet_access: bool = Field(..., alias='Internet_Access')
     tutoring_sessions: int = Field(..., alias='Tutoring_Sessions')
