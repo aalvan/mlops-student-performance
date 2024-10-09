@@ -22,7 +22,7 @@ logger.setLevel(logging.INFO)
 logger.addHandler(logstash.TCPLogstashHandler(host, 50000, version=1))
 
 def log_info(log_data):
-    logger.info("Log Data", extra=log_data)
+    logger.info("Log Data", extra={"@fields": log_data})
 
 EXPERIMENT = 'student_performance'
 TRACKING_SERVER_HOST = "mlflow_server"
