@@ -1,5 +1,10 @@
 # mlops-student-performance
 
+# Docker network
+
+```
+docker network create shared_network
+```
 
 # MLflow
 
@@ -10,7 +15,9 @@ docker-compose --env-file mlflow.env -f mlflow.docker-compose.yml up --build
 
 # Airflow
 ```
-docker-compose -f airflow.docker-compose.yml up --build
+docker-compose -f airflow.docker-compose.yaml up airflow-init
+
+docker-compose -f airflow.docker-compose.yaml up --build
 
 ```
 
