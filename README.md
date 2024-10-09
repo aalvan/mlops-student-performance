@@ -19,3 +19,11 @@ docker-compose -f airflow.docker-compose.yml up --build
 ```
 docker-compose -f web-service.docker-compose.yml up --build
 ```
+
+# Monitoring
+
+```
+docker-compose -f elk.docker-compose.yml up setup
+docker-compose -f elk.docker-compose.yml up
+
+```
