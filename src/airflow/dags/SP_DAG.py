@@ -21,7 +21,6 @@ default_args = {
     venv_cache_path="/tmp/venv_cache"
 )
 def _prepare_data():
-    import numpy as np
     import pandas as pd
     from sklearn.preprocessing import OrdinalEncoder, LabelEncoder
 
@@ -52,7 +51,7 @@ def _prepare_data():
 
 @task.virtualenv(
     task_id = 'build',
-    requirements = ["scikit-learn==1.5.2", "pandas==2.2.3"],
+    requirements = ["scikit-learn==1.5.2", "pandas==2.2.3",  "numpy==2.1.2"],
     venv_cache_path="/tmp/venv_cache"
 )
 def _build():
@@ -72,7 +71,7 @@ def _build():
 
 @task.virtualenv(
     task_id = 'hyperparameter_tuning',
-    requirements = ["mlflow==2.16.2", "scikit-learn==1.5.2", "hyperopt==0.2.7", "pandas==2.2.3"],
+    requirements = ["mlflow==2.16.2", "scikit-learn==1.5.2", "hyperopt==0.2.7", "pandas==2.2.3",  "numpy==2.1.2"],
     venv_cache_path="/tmp/venv_cache"
 )
 def _hyperparameter_tuning(train_data):
@@ -171,7 +170,7 @@ def _hyperparameter_tuning(train_data):
 
 @task.virtualenv(
     task_id = 'train',
-    requirements = ["mlflow==2.16.2", "scikit-learn==1.5.2", "hyperopt==0.2.7", "pandas==2.2.3"],
+    requirements = ["mlflow==2.16.2", "scikit-learn==1.5.2", "hyperopt==0.2.7", "pandas==2.2.3",  "numpy==2.1.2"],
     venv_cache_path="/tmp/venv_cache"
 )
 def  _train(parameters): # The "params" name in args is a part of kwargs and therefore reserved.
