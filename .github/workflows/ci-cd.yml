@@ -38,11 +38,11 @@ jobs:
 
     - name: Start Docker services
       run: |
-        docker-compose --env-file mlflow.env -f mlflow.docker-compose.yml up -d
-        docker-compose -f src/web_service/web-service.docker-compose.yml up -d
+        docker-compose --env-file mlflow.env -f mlflow.docker-compose.yml up -d --build
+        docker-compose -f src/web_service/web-service.docker-compose.yml up -d --build        
 
     - name: Wait for services to be ready
-      run: sleep 60  # Adjust as necessary for services to fully start
+      run: sleep 120  # Adjust as necessary for services to fully start
 
     - name: Install dependencies from Pipfile
       working-directory: src/web_service/fastapi
