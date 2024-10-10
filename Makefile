@@ -15,9 +15,18 @@ help:
 	@echo "  make elk                Start the ELK stack"
 	
 install:
-	pipenv install && \
+	@echo "Updating pip..."
+	pip install --upgrade pip
+	@echo "Installing or updating pipenv..."
+	pip install --upgrade pipenv
+	@echo "Installing project dependencies..."
+	pipenv install
+	@echo "Installing the package in editable mode..."
 	pipenv install --editable .
+	@echo "All dependencies have been installed and updated."
+
 setup-services:
+	docker network create shared_network
 	docker-compose -f  src/monitoring/elk.docker-compose.yml up setup
 	echo -e "AIRFLOW_UID=$$(id -u)" > .env
 	# Initialize and bring up Airflow from src/airflow
