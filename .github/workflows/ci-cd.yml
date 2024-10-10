@@ -47,7 +47,7 @@ jobs:
         docker-compose -f airflow.docker-compose.yaml up -d --build
 
     - name: Wait for Airflow to be ready
-      run: sleep 30
+      run: sleep 40
   
     # Trigger Airflow DAG without parameters
     - name: Trigger Airflow DAG
