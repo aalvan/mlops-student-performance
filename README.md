@@ -178,6 +178,9 @@ By using GitHub Actions, we ensure a robust, efficient, and automated workflow, 
 **Note**: The deployment of the web service is currently under development due to issues encountered when executing the DAG.
 
 ## Installation
+> [!NOTE]
+> This project was originally created on GitHub Codespaces using a 4-core 16GB RAM • 32GB machine. If you want to run the code easily, consider using GitHub Codespaces for a seamless experience.
+
 
 ### Prerequistes 
     - Python 3.12
