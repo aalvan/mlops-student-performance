@@ -1,6 +1,7 @@
 # Student Performance Prediction with MLOps
 
 ## Project Overview
+
 This project aims to build an end-to-end MLOps pipeline that predicts student performance based on a variety of academic, socio-economic, and behavioral factors. The model is designed to help educational institutions proactively identify students at risk of underperformance, enabling early interventions and personalized support strategies.
 
 The project demonstrates the complete lifecycle of machine learning, from data collection and model development to deployment, monitoring, and continuous integration. By leveraging MLOps principles, we ensure that the solution is scalable, reproducible, and maintainable.
@@ -34,6 +35,7 @@ Before starting the other services, ensure that MLflow is up and running to guar
 docker-compose --env-file mlflow.env -f mlflow.docker-compose.yml up --build
 ```
 ### Important Note
+
 It is crucial to start the MLflow service before any other services (such as Airflow and the web service) to ensure that they can properly connect to and utilize MLflow’s tracking and model registration capabilities. Failing to do so may lead to connectivity issues and hinder the effectiveness of the machine learning lifecycle management in this project.
 
 ## Orchestration
@@ -50,13 +52,16 @@ To initialize and start the Airflow services, use the following commands:
    ```bash
    docker-compose -f airflow.docker-compose.yaml up airflow-init
    ```
-2. **Start Airflow Services: After initializing, start the Airflow services with the following command**:
-    ```
+2. **Start Airflow Services**: After initializing, start the Airflow services with the following command:
+
+    ```bash
     docker-compose -f airflow.docker-compose.yaml up --build
     ```
 ## Web Service
+
 This project includes a web service that consists of two main components: an API built using FastAPI and a user interface created with Streamlit. The FastAPI backend handles model predictions and serves the machine learning model, while the Streamlit frontend provides an interactive interface for users to input data and visualize results.
 ### Running the Web Service
+
 Both the FastAPI API and the Streamlit interface are containerized and can be run together using Docker Compose. The following command will build and start the services in Docker containers:
 ```
 docker-compose -f web-service.docker-compose.yml up --build
@@ -85,17 +90,11 @@ To set up the ELK stack, run the following command to initialize the services:
    ```
 2. **Start the ELK Stack**: 
     Once the setup is complete, you can start the ELK stack with the following command:
-
-    ```docker-compose -f elk.docker-compose.yml up
+    ```bash
+    docker-compose -f elk.docker-compose.yml up
     ```
-
-
-### Running the ELK Stack
-Once the setup is complete, you can start the ELK stack with the following command:
-```bash
-docker-compose -f elk.docker-compose.yml up
-```
 ### Visualizing Logs
+
 Logs can be visualized in Kibana while utilizing the Streamlit app. As users interact with the Streamlit interface, logs are generated and sent to the ELK stack for analysis and visualization. For visualizing logs connect to Kibana at `http://localhost:5601`.
 
 ## GitHub Actions CI/CD
