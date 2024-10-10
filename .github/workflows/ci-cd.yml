@@ -33,12 +33,6 @@ jobs:
     - name: Create shared network
       run: docker network create shared_network
 
-    - name: Install Pipenv
-      run: |
-        pip install pipenv
-        pipenv install
-        pipenv shell
-
     - name: Start Docker services
       run: |
         docker-compose --env-file mlflow.env -f mlflow.docker-compose.yml up -d
@@ -47,9 +41,13 @@ jobs:
     - name: Wait for services to be ready
       run: sleep 20  # Adjust as necessary for services to fully start
 
+    - name: Install dependencies from Pipfile
+      working-directory: src/web_service/fastapi
+      run: pipenv install 
+
     - name: Run FastAPI unit tests
       working-directory: src/web_service/fastapi
-      run: pytest tests/unit
+      run: pipenv run pytest tests/unit
 
     - name: Stop Docker services
       run: |
