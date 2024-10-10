@@ -3,11 +3,10 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # Trigger the workflow on pushes to the main branch
+      - develop
   pull_request:
     branches:
-      - main  # Trigger on PRs to the main branch
-
+      - develop
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
