@@ -1,3 +1,5 @@
+![mlops-diagram](https://github.com/user-attachments/assets/ab792c1b-d14e-4f51-ac9f-853af3fffd1a)
+
 # Student Performance Prediction with MLOps
 
 ## Project Overview
