@@ -43,19 +43,26 @@ jobs:
       working-directory: src/airflow
       run: |
         echo -e "AIRFLOW_UID=$(id -u)" > .env
+        docker-compose -f airflow.docker-compose.yaml up airflow-init
         docker-compose -f airflow.docker-compose.yaml up -d --build
 
     - name: Wait for Airflow to be ready
-      run: sleep 180  # Adjust as necessary for services to fully start
+      run: sleep 120  # Adjust as necessary for services to fully start
   
     # Trigger Airflow DAG without parameters
     - name: Trigger Airflow DAG
       run: |
-        curl -X POST \
-        --user airflow:airflow \
-        http://localhost:8080/api/v1/dags/SP_DAG/dagRuns \
-        -H 'Content-Type: application/json' \
-        -d '{}'
+        DAG_ID="student_performance"  # Use the correct DAG ID
+        AIRFLOW_URL="http://localhost:8080/api/v1/dags/${DAG_ID}/dagRuns"
+
+        # Trigger the DAG
+        response=$(curl -X POST \
+          -u "airflow:airflow" \
+          -H "Content-Type: application/json" \
+          -d '{"conf": {}}' \
+          "${AIRFLOW_URL}")
+
+        echo "Response: $response"
     
     - name: Start Web service
       run: docker-compose -f src/web_service/web-service.docker-compose.yml up -d --build
