@@ -42,7 +42,7 @@ jobs:
         docker-compose -f src/web_service/web-service.docker-compose.yml up -d
 
     - name: Wait for services to be ready
-      run: sleep 20  # Adjust as necessary for services to fully start
+      run: sleep 60  # Adjust as necessary for services to fully start
 
     - name: Install dependencies from Pipfile
       working-directory: src/web_service/fastapi
