@@ -26,11 +26,15 @@ install:
 	@echo "All dependencies have been installed and updated."
 
 setup-services:
-	docker network create shared_network
-	docker-compose -f  src/monitoring/elk.docker-compose.yml up setup
-	echo -e "AIRFLOW_UID=$$(id -u)" > .env
-	# Initialize and bring up Airflow from src/airflow
+	@echo "Creating shared Docker network if it doesn't exist..."
+	docker network create shared_network || true  # Ignore error if the network exists
+	@echo "Setting up ELK stack..."
+	docker-compose -f src/monitoring/elk.docker-compose.yml up setup
+	@echo "Creating .env file with AIRFLOW_UID..."
+	echo "AIRFLOW_UID=$$(id -u)" > src/airflow/.env  # Save the .env file in the Airflow directory
+	@echo "Initializing Airflow..."
 	cd src/airflow && docker-compose -f airflow.docker-compose.yaml up airflow-init
+	@echo "Airflow setup completed."
 
 start-services: mlflow airflow airflow-dag-trigger web_service elk
 
