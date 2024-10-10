@@ -7,6 +7,7 @@ The project demonstrates the complete lifecycle of machine learning, from data c
 
 **Note**:
 The "Student Performance Factors" dataset used in this project is a synthetic dataset generated for educational and analytical purposes. The data is not sourced from any real-world institutions but is created to simulate realistic scenarios for analyzing student performance factors. As such, the results and predictions should not be used in real-world decision-making. Care should be taken when interpreting the outcomes, as the model's performance is based solely on this synthetic dataset and may not generalize to different or actual student populations.
+
 --------
 
 ## Docker Network
