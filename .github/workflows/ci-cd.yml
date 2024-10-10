@@ -87,9 +87,7 @@ jobs:
             # Wait for a few seconds before polling again
             sleep 5
         done
-    - name: Wait for DAG student_performance to be finished
-      run: sleep 120
-    
+
     - name: Start Web service
       run: docker-compose -f src/web_service/web-service.docker-compose.yml up -d --build
          
