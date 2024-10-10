@@ -36,14 +36,22 @@ setup-services:
 	cd src/airflow && docker-compose -f airflow.docker-compose.yaml up airflow-init
 	@echo "Airflow setup completed."
 
-start-services: mlflow airflow airflow-dag-trigger web_service elk
+start-services: 
+	mlflow airflow airflow-dag-trigger web_service elk
+	@echo "Ports 8501, 5000, 5601 are now available for access."
 
 mlflow:
 	docker-compose --env-file mlflow.env -f mlflow.docker-compose.yml up -d --build
 
 airflow:
 	cd src/airflow && docker-compose -f airflow.docker-compose.yaml up -d --build
-	sleep 60
+	@echo "Waiting for Airflow webserver to be reachable..."
+	# Poll Airflow webserver until it responds with HTTP 200
+	@until curl --silent --fail --output /dev/null http://localhost:8080/health; do \
+		echo "Airflow webserver is not ready yet. Retrying..."; \
+		sleep 5; \
+	done
+	@echo "Airflow is running and accessible at http://localhost:8080"
 
 airflow-dag-trigger:
 	@echo "Unpausing the DAG..."
