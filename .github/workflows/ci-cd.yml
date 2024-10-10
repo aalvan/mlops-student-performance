@@ -6,7 +6,10 @@ on:
       - develop
   pull_request:
     branches:
-      - develop
+      - main
+  
+  workflow_dispatch:
+    
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
