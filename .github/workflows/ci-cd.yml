@@ -35,7 +35,7 @@ jobs:
 
     - name: Start Docker services
       run: |
-        docker-compose -f mlflow.docker-compose.yml up -d
+        docker-compose --env-file mlflow.env -f mlflow.docker-compose.yml up -d
         docker-compose -f src/web_service/web-service.docker-compose.yml up -d
 
     - name: Wait for services to be ready
