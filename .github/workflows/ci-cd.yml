@@ -45,6 +45,9 @@ jobs:
         echo -e "AIRFLOW_UID=$(id -u)" > .env
         docker-compose -f airflow.docker-compose.yaml up -d --build
 
+    - name: Wait for Airflow to be ready
+      run: sleep 180  # Adjust as necessary for services to fully start
+  
     # Trigger Airflow DAG without parameters
     - name: Trigger Airflow DAG
       run: |
