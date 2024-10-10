@@ -45,14 +45,11 @@ jobs:
         echo -e "AIRFLOW_UID=$(id -u)" > .env
         docker-compose -f airflow.docker-compose.yaml up airflow-init
         docker-compose -f airflow.docker-compose.yaml up -d --build
-
-    - name: Wait for Airflow to be ready
-      run: sleep 60
-  
+        
     # Trigger Airflow DAG without parameters
     - name: Trigger Airflow DAG
       run: |
-        DAG_ID="student_performance"  # Use the correct DAG ID
+        DAG_ID="test_dag_dummy"  # Use the correct DAG ID
         AIRFLOW_URL="http://localhost:8080/api/v1/dags/${DAG_ID}/dagRuns"
 
         # Trigger the DAG
@@ -97,6 +94,10 @@ jobs:
     - name: Install dependencies from Pipfile
       working-directory: src/web_service/fastapi
       run: pipenv install 
+
+    - name: Run request test
+      working-directory: src/web_service/fastapi
+      run: pipenv run test.py
 
     - name: Run FastAPI unit tests
       working-directory: src/web_service/fastapi
