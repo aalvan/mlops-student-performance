@@ -46,6 +46,8 @@ airflow:
 	sleep 60
 
 airflow-dag-trigger:
+	@echo "Unpausing the DAG..."
+	docker exec -it airflow-airflow-webserver-1 airflow dags unpause student_performance
 	@echo "Triggering DAG..."
 	DAG_ID="student_performance"; \
 	AIRFLOW_URL="http://localhost:8080/api/v1/dags/$$DAG_ID/dagRuns"; \
