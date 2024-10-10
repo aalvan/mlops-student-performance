@@ -42,11 +42,11 @@ jobs:
         docker-compose -f src/web_service/web-service.docker-compose.yml up -d
 
     - name: Wait for services to be ready
-      run: sleep 30  # Adjust as necessary for services to fully start
+      run: sleep 10  # Adjust as necessary for services to fully start
 
     - name: Run FastAPI unit tests
       working-directory: src/web_service/fastapi
-      run: pipenv run pytest tests/unit
+      run: pytest tests/unit
 
     - name: Stop Docker services
       run: |
