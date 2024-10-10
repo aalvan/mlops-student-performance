@@ -52,7 +52,7 @@ jobs:
     # Trigger Airflow DAG without parameters
     - name: Trigger Airflow DAG
       run: |
-        DAG_ID="test_dag_dummy"  # Use the correct DAG ID
+        DAG_ID="student_performance"  # Use the correct DAG ID
         AIRFLOW_URL="http://localhost:8080/api/v1/dags/${DAG_ID}/dagRuns"
 
         # Trigger the DAG
