@@ -12,8 +12,9 @@ hyperopt = "*"
 mlflow = "*"
 apache-airflow = "*"
 fastapi = {extras = ["standard"], version = "*"}
-mlops-student-performance = {file = ".", editable = true}
 pytest = "*"
+mlops-student-performance = {file = ".", editable = true}
+pytest-asyncio = "*"
 
 [dev-packages]
 ipykernel = "*"
