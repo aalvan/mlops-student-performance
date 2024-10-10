@@ -39,6 +39,10 @@ The "Student Performance Factors" dataset used in this project is a synthetic da
 8. [Installation](#installation)  
    8.1. [Prerequisites](#prerequisites)  
    8.2. [Steps](#steps)
+9. [Makefile](#makefile)  
+   9.1. [Recommended Workflow](#recommended-workflow)  
+   9.2. [Makefile Commands](#makefile-commands)
+
 
 ## Docker Network
 
@@ -187,6 +191,8 @@ By using GitHub Actions, we ensure a robust, efficient, and automated workflow, 
     - Pipenv
     - Docker
 ### Steps
+To simplify the installation and setup process, you can utilize the Makefile commands instead of manual steps. However, if you prefer to do it manually, follow these steps:
+
 1. **Clone the repository:**
 
     ```bash
@@ -216,3 +222,38 @@ By using GitHub Actions, we ensure a robust, efficient, and automated workflow, 
     ```bash
     pipenv install --editable .
     ```
+
+## Makefile
+
+The Makefile automates project management tasks, including:
+
+- **Installation**: Sets up Python dependencies and installs the project.
+- **Service Management**: Starts and stops essential services like MLflow, Airflow, Web Service, and ELK.
+- **Airflow DAG Handling**: Unpauses and triggers specific Airflow DAGs while monitoring their status.
+- **Testing**: Runs unit tests using pytest.
+
+### Makefile Commands
+
+- **help**: Displays a list of available commands and their descriptions.
+- **install**: Installs or updates project dependencies and sets up the project in editable mode.
+- **setup-services**: Creates a Docker network and initializes the ELK stack and Airflow.
+- **start-services**: Launches all services (MLflow, Airflow, Web Service, and ELK).
+- **mlflow**: Starts the MLflow service using Docker.
+- **airflow**: Starts the Airflow scheduler and web server and waits for them to be reachable.
+- **airflow-dag-trigger**: Unpauses and triggers a specific Airflow DAG, monitoring its execution status.
+- **web_service**: Starts the Web Service using Docker.
+- **elk**: Starts the ELK stack using Docker.
+- **test**: Runs unit tests for the Web Service using pytest.
+- **stop-services**: Stops all running Docker containers associated with the project.
+
+### Recommended Workflow
+
+To run the commands correctly, follow this order:
+
+1. **install**: Set up dependencies and project configuration.
+2. **setup-services**: Initialize the Docker network and services.
+3. **start-services**: Launch all necessary services.
+
+> **Important Note**: Always run **start-services** before executing tests to ensure all necessary services are running.
+
+After running these commands, the entire setup will be ready for use. 
