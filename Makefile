@@ -37,7 +37,11 @@ setup-services:
 	@echo "Airflow setup completed."
 
 start-services: 
-	mlflow airflow airflow-dag-trigger web_service elk
+	@$(MAKE) mlflow
+	@$(MAKE) airflow
+	@$(MAKE) airflow-dag-trigger
+	@$(MAKE) web_service
+	@$(MAKE) elk
 	@echo "Ports 8501, 5000, 5601 are now available for access."
 
 mlflow:
