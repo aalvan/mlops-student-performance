@@ -36,11 +36,25 @@ jobs:
     - name: Create shared network
       run: docker network create shared_network
 
-    - name: Start Docker services
-      run: |
+    - name: Start MLflow service
+      run: docker-compose --env-file mlflow.env -f mlflow.docker-compose.yml up -d --build
+    
+    - name: Start Airflow service
+      run: docker-compose -f src/airflow/airflow.docker-compose.yaml up -d --build
         docker-compose --env-file mlflow.env -f mlflow.docker-compose.yml up -d --build
-        docker-compose -f src/web_service/web-service.docker-compose.yml up -d --build        
 
+    # Trigger Airflow DAG without parameters
+    - name: Trigger Airflow DAG
+      run: |
+        curl -X POST \
+        --user airflow:airflow \
+        http://localhost:8080/api/v1/dags/SP_DAG/dagRuns \
+        -H 'Content-Type: application/json' \
+        -d '{}'
+    
+    - name: Start Web service
+      run: docker-compose -f src/web_service/web-service.docker-compose.yml up -d --build
+         
     - name: Wait for services to be ready
       run: sleep 120  # Adjust as necessary for services to fully start
 
