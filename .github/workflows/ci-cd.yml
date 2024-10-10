@@ -34,7 +34,9 @@ jobs:
       run: docker network create shared_network
 
     - name: Install Pipenv
-      run: pip install pipenv
+      run: |
+        pip install pipenv
+        pipenv install
 
     - name: Start Docker services
       run: |
@@ -42,7 +44,7 @@ jobs:
         docker-compose -f src/web_service/web-service.docker-compose.yml up -d
 
     - name: Wait for services to be ready
-      run: sleep 10  # Adjust as necessary for services to fully start
+      run: sleep 20  # Adjust as necessary for services to fully start
 
     - name: Run FastAPI unit tests
       working-directory: src/web_service/fastapi
