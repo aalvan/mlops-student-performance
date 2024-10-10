@@ -90,6 +90,9 @@ web_service:
 elk:
 	docker-compose -f  src/monitoring/elk.docker-compose.yml up -d --build
 
+test:
+	pipenv run pytest src/web_service/fastapi/tests/unit
+
 stop-services:
 	@echo "Stopping all Docker containers..."
 	docker-compose --env-file mlflow.env -f mlflow.docker-compose.yml down
