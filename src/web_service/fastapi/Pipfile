@@ -11,6 +11,7 @@ fastapi = {extras = ["standard"], version = "*"}
 python-logstash = "*"
 asyncio = "*"
 pytest-asyncio = "*"
+pytest = "*"
 
 [dev-packages]
 ipykernel = "*"
