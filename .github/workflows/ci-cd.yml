@@ -47,7 +47,7 @@ jobs:
         docker-compose -f airflow.docker-compose.yaml up -d --build
 
     - name: Wait for Airflow to be ready
-      run: sleep 60  # Adjust as necessary for services to fully start
+      run: sleep 60
   
     # Trigger Airflow DAG without parameters
     - name: Trigger Airflow DAG
@@ -63,6 +63,30 @@ jobs:
           "${AIRFLOW_URL}")
 
         echo "Response: $response"
+
+        # Extract run_id from the response
+        run_id=$(echo $response | jq -r '.dag_run_id')
+        echo "Run ID: $run_id"
+
+        # Poll for the status of the DAG run
+        STATUS_URL="http://localhost:8080/api/v1/dags/${DAG_ID}/dagRuns/${run_id}"
+        echo "Checking status of the DAG run..."
+
+        # Loop until the DAG run status is no longer "running"
+        while true; do
+            status_response=$(curl -X GET -u "airflow:airflow" "${STATUS_URL}")
+            state=$(echo $status_response | jq -r '.state')
+
+            echo "Current state: $state"
+
+            if [[ "$state" == "success" || "$state" == "failed" || "$state" == "skipped" ]]; then
+                echo "DAG run finished with state: $state"
+                break
+            fi
+
+            # Wait for a few seconds before polling again
+            sleep 5
+        done
     - name: Wait for DAG student_performance to be finished
       run: sleep 120
     
