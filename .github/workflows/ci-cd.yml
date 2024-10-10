@@ -25,11 +25,13 @@ jobs:
       with:
         python-version: '3.12'
 
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose  # Install Docker Compose
+
     - name: Install Pipenv
       run: pip install pipenv
-
-    - name: Install dependencies
-      run: pipenv install
 
     - name: Start Docker services
       run: |
@@ -40,7 +42,8 @@ jobs:
       run: sleep 30  # Adjust as necessary for services to fully start
 
     - name: Run FastAPI unit tests
-      run: pipenv run pytest src/web_service/fastapi/tests/unit
+      working-directory: src/web_service/fastapi
+      run: pipenv run pytest tests/unit
 
     - name: Stop Docker services
       run: |
