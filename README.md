@@ -40,7 +40,7 @@ It is crucial to start the MLflow service before any other services (such as Air
 
 ## Orchestration
 
-Apache Airflow is an open-source platform to programmatically author, schedule, and monitor workflows. In this project, Airflow is used for orchestrating the machine learning workflows, ensuring that tasks are executed in the correct order and dependencies are managed effectively.
+Apache Airflow is an open-source platform to programmatically create, schedule, and monitor workflows. In this project, Airflow is used for orchestrating the machine learning workflows, ensuring that tasks are executed in the correct order and dependencies are managed effectively.
 
 ### Starting Airflow
 
