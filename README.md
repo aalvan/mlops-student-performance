@@ -11,6 +11,33 @@ The "Student Performance Factors" dataset used in this project is a synthetic da
 
 --------
 
+## Table of Contents
+
+1. [Project Overview](#project-overview)
+2. [Docker Network](#docker-network)  
+   2.1. [Creating the Docker Network](#creating-the-docker-network)
+3. [MLflow: Experiment Tracking and Model Registration](#mlflow-experiment-tracking-and-model-registration)  
+   3.1. [Starting MLflow](#starting-mlflow)  
+   3.2. [Important Note](#important-note)
+4. [Orchestration](#orchestration)  
+   4.1. [Starting Airflow](#starting-airflow)  
+       4.1.1. [Initialize the Airflow Database](#initialize-the-airflow-database)  
+       4.1.2. [Start Airflow Services](#start-airflow-services)
+5. [Web Service](#web-service)  
+   5.1. [Running the Web Service](#running-the-web-service)  
+6. [Monitoring Logs](#monitoring-logs)  
+   6.1. [Setting Up the ELK Stack](#setting-up-the-elk-stack)  
+       6.1.1. [Initialize the Services](#initialize-the-services)  
+       6.1.2. [Start the ELK Stack](#start-the-elk-stack)  
+   6.2. [Visualizing Logs](#visualizing-logs)
+7. [GitHub Actions CI/CD](#github-actions-cicd)  
+   7.1. [Workflow Overview](#workflow-overview)  
+   7.2. [Workflow Configuration](#workflow-configuration)  
+   7.3. [Getting Started](#getting-started)
+8. [Installation](#installation)  
+   8.1. [Prerequisites](#prerequisites)  
+   8.2. [Steps](#steps)
+
 ## Docker Network
 
 A shared Docker network is created to facilitate communication between the various services in the project. This ensures that the different containers can interact seamlessly with each other.
@@ -47,9 +74,10 @@ Apache Airflow is an open-source platform to programmatically create, schedule, 
 To initialize and start the Airflow services, use the following commands:
 
 1. **Initialize the Airflow Database**:
-   This command sets up the necessary database for Airflow to manage its metadata and task states.
+   These commands set up the necessary database for Airflow to manage its metadata and task states.
 
    ```bash
+   echo -e "AIRFLOW_UID=$(id -u)" > .env
    docker-compose -f airflow.docker-compose.yaml up airflow-init
    ```
 2. **Start Airflow Services**: After initializing, start the Airflow services with the following command:
