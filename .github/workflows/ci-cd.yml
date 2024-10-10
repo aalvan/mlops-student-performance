@@ -47,7 +47,7 @@ jobs:
         docker-compose -f airflow.docker-compose.yaml up -d --build
 
     - name: Wait for Airflow to be ready
-      run: sleep 120  # Adjust as necessary for services to fully start
+      run: sleep 60  # Adjust as necessary for services to fully start
   
     # Trigger Airflow DAG without parameters
     - name: Trigger Airflow DAG
@@ -63,12 +63,14 @@ jobs:
           "${AIRFLOW_URL}")
 
         echo "Response: $response"
+    - name: Wait for DAG student_performance to be finished
+      run: sleep 120
     
     - name: Start Web service
       run: docker-compose -f src/web_service/web-service.docker-compose.yml up -d --build
          
     - name: Wait for services to be ready
-      run: sleep 60  # Adjust as necessary for services to fully start
+      run: sleep 120  # Adjust as necessary for services to fully start
 
     - name: Install dependencies from Pipfile
       working-directory: src/web_service/fastapi
