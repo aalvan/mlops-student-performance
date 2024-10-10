@@ -39,9 +39,10 @@ The "Student Performance Factors" dataset used in this project is a synthetic da
 8. [Installation](#installation)  
    8.1. [Prerequisites](#prerequisites)  
    8.2. [Steps](#steps)
-9. [Makefile](#makefile)  
-   9.1. [Recommended Workflow](#recommended-workflow)  
-   9.2. [Makefile Commands](#makefile-commands)
+9. [Makefile](#makefile)
+   9.1. [Makefile Commands](#makefile-commands)  
+   9.2. [Recommended Workflow](#recommended-workflow)  
+   
 
 
 ## Docker Network
