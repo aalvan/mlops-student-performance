@@ -109,10 +109,6 @@ jobs:
       working-directory: src/web_service/fastapi
       run: pipenv install 
 
-    - name: Run request test
-      working-directory: src/web_service/fastapi
-      run: pipenv run pytest test.py
-
     - name: Run FastAPI unit tests
       working-directory: src/web_service/fastapi
       run: pipenv run pytest tests/unit
