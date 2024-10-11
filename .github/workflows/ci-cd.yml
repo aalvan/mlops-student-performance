@@ -54,7 +54,18 @@ jobs:
     # Trigger Airflow DAG without parameters
     - name: Trigger Airflow DAG
       run: |
-        docker exec -it airflow-airflow-webserver-1 airflow dags unpause student_performance
+        container_id=$(docker-compose -f src/airflow/airflow.docker-compose.yaml ps -q webserver)
+        
+        if [ -z "$container_id" ]; then
+          echo "Airflow webserver container not found."
+          exit 1
+        fi
+
+        echo "Using container: $container_id"
+
+        # Unpause the DAG
+        docker exec -it "$container_id" airflow dags unpause student_performance
+
         DAG_ID="student_performance"  # Use the correct DAG ID
         AIRFLOW_URL="http://localhost:8080/api/v1/dags/${DAG_ID}/dagRuns"
 
