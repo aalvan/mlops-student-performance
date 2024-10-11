@@ -3,7 +3,7 @@ name: CI/CD Workflow
 on:
   push:
     branches:
-      - main
+      - develop
   pull_request:
     branches:
       - main
@@ -45,13 +45,16 @@ jobs:
         echo -e "AIRFLOW_UID=$(id -u)" > .env
         docker-compose -f airflow.docker-compose.yaml up airflow-init
         docker-compose -f airflow.docker-compose.yaml up -d --build
-
-    - name: Wait for Airflow to be ready
-      run: sleep 40
+        until curl --silent --fail --output /dev/null http://localhost:8080/health; do
+          echo "Airflow webserver is not ready yet. Retrying..."
+          sleep 5
+        done
+        echo "Airflow webserver is ready."
   
     # Trigger Airflow DAG without parameters
     - name: Trigger Airflow DAG
       run: |
+        docker exec -it airflow-airflow-webserver-1 airflow dags unpause student_performance
         DAG_ID="student_performance"  # Use the correct DAG ID
         AIRFLOW_URL="http://localhost:8080/api/v1/dags/${DAG_ID}/dagRuns"
 
@@ -91,9 +94,6 @@ jobs:
     - name: Start Web service
       run: docker-compose -f src/web_service/web-service.docker-compose.yml up -d --build
          
-    - name: Wait for services to be ready
-      run: sleep 120  # Adjust as necessary for services to fully start
-
     - name: Install dependencies from Pipfile
       working-directory: src/web_service/fastapi
       run: pipenv install 
