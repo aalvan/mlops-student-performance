@@ -54,7 +54,7 @@ jobs:
     # Trigger Airflow DAG without parameters
     - name: Trigger Airflow DAG
       run: |
-        container_id=$(docker-compose -f src/airflow/airflow.docker-compose.yaml ps -q webserver)
+        container_id=$(docker-compose -f src/airflow/airflow.docker-compose.yaml ps -q airflow-webserver)
         
         if [ -z "$container_id" ]; then
           echo "Airflow webserver container not found."
