@@ -1,6 +1,7 @@
 ![mlops-diagram](https://github.com/user-attachments/assets/56d235aa-6598-4804-81e9-f495b3afd227)
 
 # Student Performance Prediction with MLOps
+[![CI/CD Workflow](https://github.com/aalvan/mlops-student-performance/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/aalvan/mlops-student-performance/actions/workflows/ci-cd.yml)
 
 ## Project Overview
 
@@ -134,7 +135,7 @@ Logs can be visualized in Kibana while utilizing the Streamlit app. As users int
 
 ## GitHub Actions CI/CD
 
-This project leverages **GitHub Actions** to automate the continuous integration and continuous deployment (CI/CD) process. The CI/CD workflow is triggered on pushes to the `develop` branch and pull requests to the `main` branch, and it also supports manual triggering.
+This project utilizes **GitHub Actions** to automate the continuous integration and continuous deployment (CI/CD) processes. The CI/CD workflow is triggered by pushes to the main branch, as well as pull requests targeting the main branch. Additionally, it supports manual triggers for greater flexibility.
 
 ### Workflow Overview
 
@@ -179,8 +180,6 @@ The CI/CD workflows are defined in the `.github/workflows` directory of the repo
 To set up GitHub Actions for your fork of this project, ensure that the necessary secrets and environment variables are configured in your repository settings. This setup will allow the CI/CD pipeline to run smoothly, automating the testing and deployment process whenever changes are made.
 
 By using GitHub Actions, we ensure a robust, efficient, and automated workflow, enhancing the development experience and minimizing the risk of errors during deployments.
-
-**Note**: The deployment of the web service is currently under development due to issues encountered when executing the DAG.
 
 ## Installation
 > [!NOTE]
