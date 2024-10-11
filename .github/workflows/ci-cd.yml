@@ -64,7 +64,7 @@ jobs:
         echo "Using container: $container_id"
 
         # Unpause the DAG
-        docker exec -it "$container_id" airflow dags unpause student_performance
+        docker exec -i "$container_id" airflow dags unpause student_performance
 
         DAG_ID="student_performance"  # Use the correct DAG ID
         AIRFLOW_URL="http://localhost:8080/api/v1/dags/${DAG_ID}/dagRuns"
