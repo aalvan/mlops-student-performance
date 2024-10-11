@@ -1,0 +1,119 @@
+name: CI/CD Workflow
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:  # Allows manual triggering of the workflow
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose  # Install Docker Compose
+
+    - name: Install Pipenv
+      run: pip install pipenv
+    
+    - name: Create shared network
+      run: docker network create shared_network
+
+    - name: Start MLflow service
+      run: docker-compose --env-file mlflow.env -f mlflow.docker-compose.yml up -d --build
+    
+    - name: Start Airflow service
+      working-directory: src/airflow
+      run: |
+        echo -e "AIRFLOW_UID=$(id -u)" > .env
+        docker-compose -f airflow.docker-compose.yaml up airflow-init
+        docker-compose -f airflow.docker-compose.yaml up -d --build
+        until curl --silent --fail --output /dev/null http://localhost:8080/health; do
+          echo "Airflow webserver is not ready yet. Retrying..."
+          sleep 5
+        done
+        echo "Airflow webserver is ready."
+  
+    # Trigger Airflow DAG without parameters
+    - name: Trigger Airflow DAG
+      run: |
+        container_id=$(docker-compose -f src/airflow/airflow.docker-compose.yaml ps -q airflow-webserver)
+        
+        if [ -z "$container_id" ]; then
+          echo "Airflow webserver container not found."
+          exit 1
+        fi
+
+        echo "Using container: $container_id"
+
+        # Unpause the DAG
+        docker exec -i "$container_id" airflow dags unpause student_performance
+
+        DAG_ID="student_performance"  # Use the correct DAG ID
+        AIRFLOW_URL="http://localhost:8080/api/v1/dags/${DAG_ID}/dagRuns"
+
+        # Trigger the DAG
+        response=$(curl -X POST \
+          -u "airflow:airflow" \
+          -H "Content-Type: application/json" \
+          -d '{"conf": {}}' \
+          "${AIRFLOW_URL}")
+
+        echo "Response: $response"
+
+        # Extract run_id from the response
+        run_id=$(echo $response | jq -r '.dag_run_id')
+        echo "Run ID: $run_id"
+
+        # Poll for the status of the DAG run
+        STATUS_URL="http://localhost:8080/api/v1/dags/${DAG_ID}/dagRuns/${run_id}"
+        echo "Checking status of the DAG run..."
+
+        # Loop until the DAG run status is no longer "running"
+        while true; do
+            status_response=$(curl -X GET -u "airflow:airflow" "${STATUS_URL}")
+            state=$(echo $status_response | jq -r '.state')
+
+            echo "Current state: $state"
+
+            if [[ "$state" == "success" || "$state" == "failed" || "$state" == "skipped" ]]; then
+                echo "DAG run finished with state: $state"
+                break
+            fi
+
+            # Wait for a few seconds before polling again
+            sleep 5
+        done
+
+    - name: Start Web service
+      run: docker-compose -f src/web_service/web-service.docker-compose.yml up -d --build
+         
+    - name: Install dependencies from Pipfile
+      working-directory: src/web_service/fastapi
+      run: pipenv install 
+
+    - name: Run FastAPI unit tests
+      working-directory: src/web_service/fastapi
+      run: pipenv run pytest tests/unit
+
+    - name: Stop Docker services
+      run: |
+        docker-compose --env-file mlflow.env -f mlflow.docker-compose.yml down
+        docker-compose -f src/web_service/web-service.docker-compose.yml down

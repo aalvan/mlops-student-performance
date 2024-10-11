@@ -1,0 +1,26 @@
+services:
+  fastapi:
+    build:
+      context: ./fastapi  
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - default
+      - shared_network
+
+  streamlit:
+    build:
+      context: ./streamlit
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    networks:
+      - default
+      - shared_network
+    depends_on:
+      - fastapi
+
+networks:
+  shared_network:
+    external: true
