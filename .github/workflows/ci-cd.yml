@@ -115,5 +115,5 @@ jobs:
 
     - name: Stop Docker services
       run: |
-        docker-compose -f mlflow.docker-compose.yml down
+        docker-compose --env-file mlflow.env -f mlflow.docker-compose.yml down
         docker-compose -f src/web_service/web-service.docker-compose.yml down
